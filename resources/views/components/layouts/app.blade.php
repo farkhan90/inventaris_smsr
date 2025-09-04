@@ -41,19 +41,13 @@
             <x-menu activate-by-route>
                 <x-menu-item title="Beranda" icon="o-home" link="/" />
 
+                {{-- TAMPILKAN MENU INI HANYA UNTUK ADMIN --}}
+                @if (auth()->user()->role === \App\Models\User::ROLE_ADMIN)
+                    <x-menu-item title="Kelola User" icon="o-users" link="{{ route('users.index') }}" />
+                @endif
+
                 {{-- LOGOUT --}}
                 <x-menu-separator />
-                <x-menu-item>
-                    <x-slot:label>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="flex items-center w-full">
-                                <x-icon name="o-arrow-left-on-rectangle" />
-                                <span>Logout</span>
-                            </button>
-                        </form>
-                    </x-slot:label>
-                </x-menu-item>
 
             </x-menu>
         </x-slot:sidebar>

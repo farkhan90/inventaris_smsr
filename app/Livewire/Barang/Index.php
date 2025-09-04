@@ -15,12 +15,14 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 use Illuminate\Support\Str;
+use Livewire\WithPagination;
 
 #[Title('Beranda')]
 class Index extends Component
 {
     use WithFileUploads;
     use Toast;
+    use WithPagination;
 
     // Properti form
     public string $nama_barang = '';
@@ -108,7 +110,7 @@ class Index extends Component
                 $query->where('nama_barang', 'like', '%' . $this->search . '%');
             })
             ->latest()
-            ->get()
+            ->paginate(12) // Ganti get() menjadi paginate(). 12 item (3x4 grid) per halaman
             : collect();
 
         return view('livewire.barang.index', [

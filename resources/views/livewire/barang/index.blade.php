@@ -67,6 +67,9 @@
                             </div>
                         @endforeach
                     </div>
+                    <div class="mt-8">
+                        {{ $barangs->links() }}
+                    </div>
                 @else
                     <div class="mt-10">
                         @if (empty($search))
