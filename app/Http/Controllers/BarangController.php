@@ -28,6 +28,11 @@ class BarangController extends Controller
             abort(404, 'File gambar tidak ditemukan.');
         }
 
+        if (!$barang->pernah_didownload) {
+            $barang->pernah_didownload = true;
+            $barang->save();
+        }
+
         // 4. Buat nama file yang lebih ramah pengguna untuk di-download
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         $friendlyFilename = Str::slug($barang->nama_barang) . '.' . $extension;

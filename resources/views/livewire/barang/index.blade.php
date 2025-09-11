@@ -39,11 +39,15 @@
                                     <img src="{{ route('images.show', ['filename' => basename($barang->foto_barang)]) }}"
                                         class="object-cover w-full h-48 rounded-t-lg" alt="{{ $barang->nama_barang }}">
                                     <div class="p-4">
-                                        <h3 class="font-bold truncate" title="{{ $barang->nama_barang }}">
+                                        <h3 class="font-bold min-h-16" title="{{ $barang->nama_barang }}">
                                             {{ $barang->nama_barang }}</h3>
                                         <p class="mt-1 text-xs text-gray-500">
                                             Ditambahkan: {{ $barang->created_at->diffForHumans() }}
                                         </p>
+                                        @if ($barang->pernah_didownload)
+                                            <x-icon name="o-check-circle" class="text-green-500 shrink-0"
+                                                title="Pernah di-download" />
+                                        @endif
                                     </div>
                                     <x-slot:actions>
                                         <div class="flex justify-end w-full gap-2"> {{-- Tambahkan gap-2 untuk spasi --}}

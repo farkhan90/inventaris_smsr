@@ -13,5 +13,10 @@ class Barang extends Model
     protected $fillable = [
         'nama_barang',
         'foto_barang',
+        'pernah_didownload',
+    ];
+
+    protected $casts = [
+        'pernah_didownload' => 'boolean',
     ];
 }
