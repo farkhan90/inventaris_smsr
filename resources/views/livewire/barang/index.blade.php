@@ -45,8 +45,10 @@
                                             Ditambahkan: {{ $barang->created_at->diffForHumans() }}
                                         </p>
                                         @if ($barang->pernah_didownload)
-                                            <x-icon name="o-check-circle" class="text-green-500 shrink-0"
-                                                title="Pernah di-download" />
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                Inventarisasi : <x-icon name="o-check-circle"
+                                                    class="text-green-500 shrink-0" title="Pernah di-download" />
+                                            </p>
                                         @endif
                                     </div>
                                     <x-slot:actions>
