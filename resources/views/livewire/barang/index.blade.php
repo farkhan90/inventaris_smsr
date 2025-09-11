@@ -44,12 +44,12 @@
                                         <p class="mt-1 text-xs text-gray-500">
                                             Ditambahkan: {{ $barang->created_at->diffForHumans() }}
                                         </p>
-                                        @if ($barang->pernah_didownload)
-                                            <p class="mt-1 text-xs text-gray-500">
-                                                Inventarisasi : <x-icon name="o-check-circle"
-                                                    class="text-green-500 shrink-0" title="Pernah di-download" />
-                                            </p>
-                                        @endif
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Inventarisasi : @if ($barang->pernah_didownload)
+                                                <x-icon name="o-check-circle" class="text-green-500 shrink-0"
+                                                    title="Pernah di-download" />
+                                            @endif
+                                        </p>
                                     </div>
                                     <x-slot:actions>
                                         <div class="flex justify-end w-full gap-2"> {{-- Tambahkan gap-2 untuk spasi --}}
