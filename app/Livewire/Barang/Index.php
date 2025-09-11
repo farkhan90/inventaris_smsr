@@ -59,7 +59,7 @@ class Index extends Component
 
         $validated = $this->validate([
             'nama_barang' => 'required|string|max:255',
-            'foto_barang' => 'required|image|max:2048',
+            'foto_barang' => 'required|image',
         ]);
 
         $baseFileName = Str::slug($validated['nama_barang']);
