@@ -56,10 +56,10 @@
 
                                             {{-- TOMBOL DOWNLOAD BARU --}}
                                             {{-- Ini adalah link biasa, bukan aksi Livewire, jadi tidak perlu `wire:click` --}}
-                                            <a href="{{ route('barang.download', $barang->id) }}"
-                                                class="btn btn-sm btn-circle btn-info" title="Download Gambar">
-                                                <x-icon name="o-arrow-down-tray" class="w-4 h-4" />
-                                            </a>
+                                            <x-button icon="o-arrow-down-tray" class="btn-sm btn-circle btn-info"
+                                                title="Download Gambar"
+                                                wire:click="startDownload('{{ $barang->id }}')"
+                                                spinner="startDownload('{{ $barang->id }}')" />
 
                                             @if (auth()->user()->role === \App\Models\User::ROLE_ADMIN)
                                                 <x-button icon="o-trash" class="btn-sm btn-error btn-circle"

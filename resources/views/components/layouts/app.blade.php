@@ -60,6 +60,21 @@
 
     {{--  TOAST area --}}
     <x-toast />
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            // Dengarkan event 'start-download' yang dikirim dari komponen Livewire
+            Livewire.on('start-download', (event) => {
+                // Ambil URL dari data event
+                const url = event.url;
+
+                // Gunakan window.location.href untuk memulai download
+                // Ini akan membuat browser menavigasi ke URL download
+                // dan memicu dialog "Simpan File"
+                window.location.href = url;
+            });
+        });
+    </script>
 </body>
 
 </html>

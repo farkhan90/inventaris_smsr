@@ -100,6 +100,25 @@ class Index extends Component
         $this->success('Barang berhasil dihapus.');
     }
 
+    public function startDownload(string $barangId)
+    {
+        $barang = Barang::findOrFail($barangId);
+
+        // 1. Update status di database jika belum pernah di-download
+        if (!$barang->pernah_didownload) {
+            $barang->pernah_didownload = true;
+            $barang->save();
+        }
+
+        // 2. Buat URL download yang aman
+        $downloadUrl = route('barang.download', $barang->id);
+
+        // 3. Kirim event ke browser untuk memulai download
+        //    Livewire akan otomatis me-refresh komponen setelah aksi ini,
+        //    sehingga centang akan langsung muncul.
+        $this->dispatch('start-download', url: $downloadUrl);
+    }
+
     public function render()
     {
         // Ambil data hanya jika komponen sudah siap.
