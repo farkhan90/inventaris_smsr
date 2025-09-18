@@ -107,7 +107,7 @@
                         @endforeach
                     </div>
                     <div class="mt-8">
-                        {{ $barangs->links('components.paginator') }}
+                        {{ $barangs->links() }}
                     </div>
                 @else
                     <div class="mt-10">
