@@ -5,13 +5,42 @@
         <x-card title="Tambah Barang Baru" shadow separator>
             <x-form wire:submit="save">
                 <div class="grid gap-5 sm:grid-cols-2">
-                    <x-input label="Nama Barang" wire:model="nama_barang" />
+                    <div class="relative" x-data @click.away="$wire.hideSuggestions()">
+                        {{-- Input teks standar yang 100% kompatibel dengan Livewire --}}
+                        <x-input label="Nama Barang" wire:model.live.debounce.300ms="nama_barang"
+                            placeholder="Ketik nama barang..." autocomplete="off" />
+
+                        {{-- Daftar Saran (Dropdown Autocomplete) --}}
+                        @if ($showSuggestions)
+                            <div
+                                class="absolute z-20 w-full mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                                <ul class="divide-y divide-base-300">
+                                    @forelse($namaBarangSuggestions as $suggestion)
+                                        <li wire:key="suggestion-{{ $loop->index }}"
+                                            class="flex items-center justify-between p-3 hover:bg-base-200">
+                                            <span class="text-base-content">{{ $suggestion }}</span>
+                                            <x-button label="Gunakan" class="btn-xs btn-ghost" {{-- PENTING: .prevent agar tidak memicu @click.away --}}
+                                                wire:click.prevent="useSuggestedName('{{ $suggestion }}')"
+                                                spinner="useSuggestedName('{{ $suggestion }}')" />
+                                        </li>
+                                    @empty
+                                        <li class="p-3 text-center text-gray-500">Tidak ada saran ditemukan.</li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
                     <x-file label="Foto Barang" wire:model="foto_barang" accept="image/png, image/jpeg" />
+                    <div wire:loading wire:target="foto_barang" class="mt-2 text-sm text-gray-500">
+                        Sedang mengunggah foto...
+                    </div>
                 </div>
 
                 <x-slot:actions>
-                    <x-button label="Batal" @click="$wire.reset()" />
-                    <x-button label="Simpan" type="submit" class="btn-primary" spinner="save" />
+                    <x-button label="Batal" @click="$wire.showCreateModal = false" />
+                    <x-button label="Simpan" class="btn-primary" type="submit" spinner="save"
+                        wire:loading.attr="disabled" wire:loading.class="btn-disabled"
+                        wire:target="foto_barang, save" />
                 </x-slot:actions>
             </x-form>
         </x-card>
@@ -52,10 +81,14 @@
                                         </p>
                                     </div>
                                     <x-slot:actions>
-                                        <div class="flex justify-end w-full gap-2"> {{-- Tambahkan gap-2 untuk spasi --}}
+                                        <div class="flex justify-end w-full gap-2">
 
-                                            {{-- TOMBOL DOWNLOAD BARU --}}
-                                            {{-- Ini adalah link biasa, bukan aksi Livewire, jadi tidak perlu `wire:click` --}}
+                                            @if (auth()->user()->role === \App\Models\User::ROLE_ADMIN)
+                                                <x-button icon="o-pencil" class="btn-sm btn-circle btn-warning"
+                                                    title="Edit Barang" wire:click="edit('{{ $barang->id }}')"
+                                                    spinner="edit('{{ $barang->id }}')" />
+                                            @endif
+
                                             <x-button icon="o-arrow-down-tray" class="btn-sm btn-circle btn-info"
                                                 title="Download Gambar"
                                                 wire:click="startDownload('{{ $barang->id }}')"
@@ -74,7 +107,7 @@
                         @endforeach
                     </div>
                     <div class="mt-8">
-                        {{ $barangs->links() }}
+                        {{ $barangs->links('components.paginator') }}
                     </div>
                 @else
                     <div class="mt-10">
@@ -104,4 +137,45 @@
             @endif
         </div>
     </div>
+
+    {{-- MODAL UNTUK EDIT BARANG --}}
+    <x-modal wire:model="showEditModal" title="Edit Barang" separator>
+        {{-- Tampilkan modal hanya jika ada barang yang sedang diedit --}}
+        @if ($editingBarang)
+            <x-form wire:submit="update">
+                <div class="space-y-4">
+                    {{-- Preview foto saat ini --}}
+                    <div>
+                        <label class="block mb-2 text-sm font-bold">Foto Saat Ini</label>
+                        <img src="{{ route('images.show', ['filename' => basename($editingBarang->foto_barang)]) }}"
+                            class="h-40 rounded-lg" alt="Foto saat ini">
+                    </div>
+
+                    {{-- Form input --}}
+                    <x-input label="Nama Barang" wire:model="editingNamaBarang" />
+                    <x-file label="Ganti Foto (Opsional)" wire:model="newFotoBarang" accept="image/png, image/jpeg" />
+
+                    {{-- Loading state untuk file upload --}}
+                    <div wire:loading wire:target="newFotoBarang" class="mt-2 text-sm text-gray-500">
+                        Sedang mengunggah foto baru...
+                    </div>
+
+                    {{-- Preview foto baru yang akan diunggah --}}
+                    @if ($newFotoBarang)
+                        <div>
+                            <label class="block mb-2 text-sm font-bold">Preview Foto Baru</label>
+                            <img src="{{ $newFotoBarang->temporaryUrl() }}" class="h-40 rounded-lg">
+                        </div>
+                    @endif
+                </div>
+
+                <x-slot:actions>
+                    <x-button label="Batal" wire:click="closeEditModal" />
+                    <x-button label="Update" class="btn-primary" type="submit" spinner="update"
+                        wire:loading.attr="disabled" wire:loading.class="btn-disabled"
+                        wire:target="newFotoBarang, update" />
+                </x-slot:actions>
+            </x-form>
+        @endif
+    </x-modal>
 </div>

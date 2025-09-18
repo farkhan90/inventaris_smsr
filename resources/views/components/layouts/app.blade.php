@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Inventaris Barang SMSR</title>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -75,6 +76,8 @@
             });
         });
     </script>
+    {{-- Choices.js JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 </body>
 
 </html>
